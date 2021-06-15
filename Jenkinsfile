@@ -66,6 +66,13 @@ pipeline {
             echo 'Deploying Frontend'
             // 프론트엔드 디렉토리의 정적파일들을 S3 에 올림, 이 전에 반드시 EC2 instance profile 을 등록해야함.
             dir ('./website'){
+                          /*
+                              >>> S3 에 파일 업로드 안되는 원인 파악
+
+                                  EC2 의 " /var/lib/jenkins/workspace/testpipeline@3/website " 위치에서
+                                  " aws s3 sync ./ s3://s3jenkinstest " 명령이 수행됨
+                                  위의 위치에 파일 생성 후 jenkins에서 빌드 진행 시 해당 파일이 S3 에 업로드 되는 것 확인함
+                          */
                 sh '''
                 aws s3 sync ./ s3://s3jenkinstest
                 '''                 // └─> 생성한 S3 의 이름 입력
