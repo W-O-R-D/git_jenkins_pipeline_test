@@ -1,3 +1,7 @@
+/*
+  80번 포트 웹서버 띄우는 프로그램
+*/
+
 import express from 'express'
 
 const app = express()
