@@ -25,7 +25,7 @@ pipeline {
 
                 git url: 'https://github.com/W-O-R-D/git_jenkins_pipeline_test.git',
                     branch: 'master',
-                    credentialsId: 'jenkins2' // git에서 생성한 젠킨스에 입력한 Personal access token ID
+                    credentialsId: 'gittest' // git에서 생성한 젠킨스에 입력한 Personal access token ID
             }
 
             post {
@@ -46,6 +46,7 @@ pipeline {
         }
         
         // 예시용 코드
+        /*
         stage('Only for production') {
           when {
             branch 'production'
@@ -56,17 +57,19 @@ pipeline {
             }
           }
         }
+        */
 
-        // aws s3 에 파일을 올림  (index.html)
+
+        // aws s3 에 파일을 올림  (index.html S3에 올라갔는 지 확인)
         stage('Deploy Frontend') {
           steps {
             echo 'Deploying Frontend'
             // 프론트엔드 디렉토리의 정적파일들을 S3 에 올림, 이 전에 반드시 EC2 instance profile 을 등록해야함.
             dir ('./website'){
                 sh '''
-                aws s3 sync ./ s3://cyrjenkinstest
+                aws s3 sync ./ s3://s3jenkinstest
                 '''                 // └─> 생성한 S3 의 이름 입력
-
+              //  └─> """ 로 할 시 안먹히는 경우 있음
                 /*
                     실습이라 간단히 s3 만 진행
 
@@ -142,9 +145,9 @@ pipeline {
             echo 'Build Backend'
 
             dir ('./server'){
-                sh """
+                sh '''
                 docker build . -t server --build-arg env=${PROD}
-                """   /* │                      └─> 멀티 배포 환경에서 관리하는 것을 보여주기 위한 옵션 ( --build-arg env=환경정보 )
+                '''   /* │                      └─> 멀티 배포 환경에서 관리하는 것을 보여주기 위한 옵션 ( --build-arg env=환경정보 )
                          └─> Docker 를 서버로 배포하기 위해 사용한 명령어 ( docker build ) 
 
                                         ※ 강사曰... 젠킨스 안에서 어떠한 환경인지 알려주는 것은 변수 하나로 관리하는 것이 좋다고 함
@@ -182,9 +185,10 @@ pipeline {
 
                 /*
                 sh '''
-                docker rm -f $(docker ps -aq)   // 기존 docker 들 전부 삭제 ( 배포한 적이 없을 경우(실행 중인 docker가 없는 경우) 이 코드 실행 시 터짐 )
+                docker rm -f $(docker ps -aq)
                 docker run -p 80:80 -d server
-                '''       // 기존 docker 이미지 삭제 후 새 docker 실행
+                '''       // 기존 docker 이미지 전체 삭제 후 새 docker 실행
+                          // ( 배포한 적이 없을 경우(실행 중인 docker가 없는 경우) 이 코드 실행 시 터짐 )
                 */
             }
           }
