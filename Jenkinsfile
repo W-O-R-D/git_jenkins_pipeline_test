@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     triggers {
-        pollSCM('*/3 * * * *')
+        pollSCM('*/3 * * * *')  // 3분에 한 번씩 트리거
     }
 
     // AWS 리소스에 접근해야 하므로 환경변수로 등록
